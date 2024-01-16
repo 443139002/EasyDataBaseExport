@@ -95,12 +95,21 @@ public class Db2DataResultImpl extends AbstractDataResultImpl implements DataRes
         return scroll;
     }
 
-    private static final String sql = "SELECT TABSCHEMA,TABNAME,COLNAME COLUMN_NAME,COLNO,TYPESCHEMA,TYPENAME COLUMN_TYPE,\"LENGTH\"," +
+    /*
+        private static final String sql = "SELECT TABSCHEMA,TABNAME,COLNAME COLUMN_NAME,COLNO,TYPESCHEMA,TYPENAME COLUMN_TYPE,\"LENGTH\"," +
             "\"SCALE\" DECIMAL_PLACES,TYPESTRINGUNITS,STRINGUNITSLENGTH,\"DEFAULT\" COLUMN_DEFAULT,\"NULLS\" IS_NULL_ABLE," +
             "REMARKS COLUMN_COMMENT FROM " +
             " SYSCAT.COLUMNS c " +
             "WHERE TABSCHEMA = '?' " +
             " AND TABNAME = '?' order by COLNO";
+    */
+    //TODO:兼容低版本DB2
+    private static final String sql = "SELECT c.*,c.COLNAME AS COLUMN_NAME,c.TYPENAME AS COLUMN_TYPE, c.\"SCALE\" AS DECIMAL_PLACES," +
+            "c.\"DEFAULT\" AS COLUMN_DEFAULT,c.\"NULLS\" AS IS_NULL_ABLE,c.REMARKS AS COLUMN_COMMENT FROM " +
+            " SYSCAT.COLUMNS c " +
+            "WHERE c.TABSCHEMA = '?' " +
+            " AND c.TABNAME = '?' order by c.COLNO";
+
 
     @SneakyThrows
     @Override
@@ -298,7 +307,8 @@ public class Db2DataResultImpl extends AbstractDataResultImpl implements DataRes
     }
 
     private void getTableInfoAndStructure(String name) throws SQLException {
-        String sql = "select TABSCHEMA as tableSchema,TABNAME tableName,OWNER,OWNERTYPE,\"TYPE\",STATUS,BASE_TABSCHEMA,BASE_TABNAME," +
+
+        /*String sql = "select TABSCHEMA as tableSchema,TABNAME tableName,OWNER,OWNERTYPE,\"TYPE\",STATUS,BASE_TABSCHEMA,BASE_TABNAME," +
                 "ROWTYPESCHEMA,ROWTYPENAME,CREATE_TIME,ALTER_TIME,INVALIDATE_TIME,STATS_TIME,COLCOUNT,TABLEID," +
                 "TBSPACEID,CARD,NPAGES,MPAGES,FPAGES,NPARTITIONS,NFILES,TABLESIZE,OVERFLOW,TBSPACE,INDEX_TBSPACE," +
                 "LONG_TBSPACE,PARENTS,CHILDREN,SELFREFS,KEYCOLUMNS,KEYINDEXID,KEYUNIQUE,CHECKCOUNT,DATACAPTURE," +
@@ -309,8 +319,9 @@ public class Db2DataResultImpl extends AbstractDataResultImpl implements DataRes
                 "COLLATIONNAME_ORDERBY,ENCODING_SCHEME,PCTPAGESSAVED,LAST_REGEN_TIME,SECPOLICYID,PROTECTIONGRANULARITY," +
                 "AUDITPOLICYID,AUDITPOLICYNAME,AUDITEXCEPTIONENABLED,\"DEFINER\",ONCOMMIT,LOGGED,ONROLLBACK,LASTUSED,CONTROL," +
                 "TEMPORALTYPE,TABLEORG,EXTENDED_ROW_SIZE,PCTEXTENDEDROWS,REMARKS as comments " +
-                "from syscat.tables where TABSCHEMA in (?) ";
-
+                "from syscat.tables where TABSCHEMA in (?) ";*/
+        //TODO:兼容低版本DB2
+        String sql="select c.*,c.TABSCHEMA as tableSchema,c.TABNAME as tableName,c.REMARKS as comments from syscat.tables c where c.TABSCHEMA in (?)";
         String newSql = String.format(sql.replace("?", "%s"), name);
         List<TableType> list = new ArrayList<>();
         List<TableTypeForMode> db2List = toListNoMode(new TableTypeForMode(), newSql);

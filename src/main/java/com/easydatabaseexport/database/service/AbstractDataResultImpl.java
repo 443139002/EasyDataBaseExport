@@ -36,6 +36,7 @@ public abstract class AbstractDataResultImpl implements DataResult {
 
     @SneakyThrows
     public ResultSet getResultSetBySql(String sql, String... params) {
+        System.out.println("getResultSetBySql-SQL==>"+sql);
         PreparedStatement preparedStatement = CommonConstant.connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         for (int i = 1; i <= params.length; i++) {
             preparedStatement.setString(i, params[i - 1]);
@@ -45,6 +46,7 @@ public abstract class AbstractDataResultImpl implements DataResult {
 
     @SneakyThrows
     public ResultSet getResultSetBySqlNoMode(String sql, String... params) {
+        System.out.println("getResultSetBySqlNoMode-SQL==>"+sql);
         PreparedStatement preparedStatement = CommonConstant.connection.prepareStatement(sql);
         for (int i = 1; i <= params.length; i++) {
             preparedStatement.setString(i, params[i - 1]);
@@ -53,6 +55,7 @@ public abstract class AbstractDataResultImpl implements DataResult {
     }
 
     public <T> List<T> toList(T t, String sql) throws SQLException {
+        System.out.println("toList-SQL==>"+sql);
         PreparedStatement preparedStatement = CommonConstant.connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -69,6 +72,7 @@ public abstract class AbstractDataResultImpl implements DataResult {
     }
 
     public <T> List<T> toListNoMode(T t, String sql) throws SQLException {
+        System.out.println("toListNoMode-SQL==>"+sql);
         PreparedStatement ppst = CommonConstant.connection.prepareStatement(sql);
         List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
         ResultSet rs = ppst.executeQuery();

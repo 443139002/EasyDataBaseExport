@@ -76,6 +76,11 @@
             <artifactId>jcc</artifactId>
             <version>${db2.version}</version>
         </dependency>
+        <!--<dependency>
+            <groupId>com.ibm.db2.jcc</groupId>
+            <artifactId>db2jcc</artifactId>
+            <version>db2jcc4</version>
+        </dependency>-->
         <!-- sqlite驱动 -->
         <dependency>
             <groupId>org.xerial</groupId>
@@ -86,7 +91,7 @@
         <dependency>
             <groupId>com</groupId>
             <artifactId>dm.jdbc</artifactId>
-            <version>18</version>
+            <version>1.0</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/DmJdbcDriver18.jar</systemPath>
         </dependency>
@@ -165,24 +170,26 @@
             <version>${itext7.version}</version>
         </dependency>
         <!-- 中文字体支持 -->
-        <!--<dependency>
+        <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>font-asian</artifactId>
             <version>${itext7.version}</version>
-        </dependency>-->
+        </dependency>
     </dependencies>
 
     <repositories>
         <!--阿里云镜像仓库-->
         <repository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <id>nexus-aliyun</id>
+            <name>Nexus aliyun</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
         </repository>
     </repositories>
+
+
 
     <build>
         <plugins>
@@ -194,6 +201,14 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 加入此配置，才会把本地的jar包也引进去 -->
+                    <includeSystemScope> true </includeSystemScope>
                 </configuration>
             </plugin>
             <plugin>
